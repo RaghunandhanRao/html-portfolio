@@ -1,0 +1,172 @@
+STEP 1 — Start AWS Lab
+
+Login → AWS Academy
+
+Click Start Lab
+
+Wait for the indicator to turn Green
+
+Click AWS
+
+STEP 2 — Launch EC2 Instance
+
+Go to EC2
+
+Click Launch Instance
+
+Enter name: ubuntu
+
+Choose AMI: Ubuntu (Free Tier)
+
+Architecture: 64-bit
+
+Instance type: t2.micro
+
+Create key pair → download .pem file
+
+Security group → Enable HTTP, HTTPS, SSH
+
+Storage → leave 8GB
+
+Click Launch
+
+Wait for 2/2 checks passed
+
+Select instance → Connect
+
+
+
+STEP 3 — Connect to EC2 (SSH)
+
+Open terminal / Git Bash
+
+Go to PEM file location:
+
+cd <path-of-pem-file>
+
+
+Copy SSH command from AWS → run:
+
+ssh -i "<file>.pem" ubuntu@<public-ip>
+
+
+
+STEP 4 — Install Required Software inside EC2
+sudo apt update
+sudo apt-get install docker.io
+sudo apt install git
+sudo apt install nano
+
+
+
+STEP 5 — Create Web App Locally and Push to GitHub
+
+(On your laptop)
+
+Create folder → add index.html
+
+Open Git Bash inside folder
+
+Run:
+
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin <github-url>
+git push -u origin main
+
+STEP 6 — Clone Repo inside EC2
+git clone <github-url>
+cd <repo-folder>
+ls
+
+STEP 7 — Create Dockerfile inside EC2
+nano Dockerfile
+
+
+Paste:
+
+FROM nginx
+COPY . /usr/share/nginx/html
+
+
+Save: Ctrl+O → Enter → Ctrl+X
+
+STEP 8 — Build and Run Docker Image (index.html)
+sudo docker build -t mywebapp .
+sudo docker run -d -p 80:80 mywebapp
+
+STEP 9 — Test the Website
+
+Copy EC2 Public IPv4
+Open in browser:
+
+http://<public-ip>
+
+STEP 10 — Stop Container & Terminate
+sudo docker ps
+sudo docker stop <container-id>
+
+
+EC2 → Instance State → Terminate
+
+---------------------------------------------------
+🔥 PART 2 — MAVEN WEB PROJECT DEPLOYMENT
+---------------------------------------------------
+STEP 11 — Launch new EC2 (same steps as above)
+
+Name
+
+Key pair
+
+Security group (all boxes checked)
+
+Launch
+
+Connect
+
+STEP 12 — Connect and Install Tools
+sudo apt update
+sudo apt-get install docker.io
+sudo apt install git
+
+STEP 13 — Clone Maven Project
+git clone <maven-project-url>
+cd <folder>
+
+
+If branch is main:
+
+git branch -M main
+
+
+If repo uses master, change default branch in GitHub settings.
+
+STEP 14 — Build Docker Image
+sudo docker build -t mavenapp .
+
+STEP 15 — Run Container on Port 9090
+sudo docker run -d -p 9090:9090 mavenapp
+
+STEP 16 — Test App
+
+Browser:
+
+http://<public-ip>:9090
+
+
+If not loading → add inbound rule:
+
+Port: 9090
+
+Source: 0.0.0.0/0
+
+Refresh.
+
+STEP 17 — Stop & Terminate Everything
+sudo docker ps
+sudo docker stop <container-id>
+
+
+Terminate EC2 → End Lab.
