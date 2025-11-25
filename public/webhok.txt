@@ -1,0 +1,127 @@
+✅ WEEK 11 – JENKINS + GITHUB WEBHOOK + NGROK + EMAIL FULL STEPS (ONE SLIDE FORMAT)
+1️⃣ NGROK SETUP (Expose Jenkins to Internet)
+Install
+https://ngrok.com/download
+
+Add Authtoken
+ngrok config add-authtoken <YOUR_TOKEN>
+
+Start Tunnel for Jenkins
+
+If Jenkins runs on 8080:
+
+ngrok http 8080
+
+
+Copy the generated URL:
+
+https://xxxxxx.ngrok.io
+
+2️⃣ CONFIGURE GITHUB WEBHOOK
+
+GitHub → Repo → Settings → Webhooks → Add Webhook
+
+Payload URL
+https://xxxxxx.ngrok.io/github-webhook/
+
+Content Type
+application/json
+
+Event
+Just the push event
+
+
+Click Add Webhook
+
+3️⃣ CONFIGURE JENKINS FOR WEBHOOK
+
+Jenkins → Your Job → Configure
+
+Build Triggers
+[✔] GitHub hook trigger for GITScm polling
+
+
+Click Save
+
+4️⃣ TEST THE WEBHOOK
+
+Push any commit:
+
+git add .
+git commit -m "webhook test"
+git push
+
+
+Jenkins should start automatically.
+
+5️⃣ ENABLE EMAIL NOTIFICATION (JENKINS + GMAIL)
+Step A – Create Gmail App Password
+
+https://myaccount.google.com
+
+Enable 2-Step Verification
+
+Go to App Passwords
+
+App → Other → Name: Jenkins
+
+Copy the 16-digit password
+
+6️⃣ INSTALL JENKINS EMAIL PLUGIN
+
+Jenkins → Manage Jenkins → Manage Plugins → Email Extension Plugin
+
+7️⃣ JENKINS GLOBAL EMAIL SETTINGS
+
+Jenkins → Manage Jenkins → Configure System
+
+E-mail Notification
+SMTP Server: smtp.gmail.com
+Use SMTP Auth: ✔
+User Name: <your Gmail>
+Password: <16 digit app password>
+Use SSL: ✔
+SMTP Port: 465
+Reply-to: <your Gmail>
+
+
+Click Test Configuration
+
+8️⃣ JOB EMAIL NOTIFICATION (Post-build Action)
+
+Jenkins → Your Job → Configure
+
+Post-build Actions → Editable Email Notification
+
+Fields
+Recipients: <email@domain.com>
+Content Type: text/plain
+Triggers: Failure, Success (your choice)
+
+
+Save
+
+📌 SUMMARY (Ultra-Short Version)
+
+ngrok → GitHub Webhook → Jenkins Trigger → Gmail Notification
+
+Commands Only:
+
+ngrok config add-authtoken <token>
+ngrok http 8080
+git add .
+git commit -m "test"
+git push
+
+
+Webhook:
+
+https://xxxxxx.ngrok.io/github-webhook/
+
+
+Gmail SMTP:
+
+smtp.gmail.com
+port: 465
+SSL: ON
+app password: <16-digit>
