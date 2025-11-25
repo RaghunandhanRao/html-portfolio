@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    tools {
+        maven 'MAVEN_HOME'
+    }
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('git repo & clean') {
+            steps {
+                bat "git clone https://github.com/Rohith6936/SELAB_maven_java_project.git"
+                bat "mvn clean -f SELAB_maven_java_project"
+            }
+        }
+
+        stage('install') {
+            steps {
+                bat "mvn install -f SELAB_maven_java_project/pom.xml"
+            }
+        }
+
+        stage('test') {
+            steps {
+                bat "mvn test -f SELAB_maven_java_project/pom.xml"
+            }
+        }
+
+        stage('package') {
+            steps {
+                bat 'mvn package -f SELAB_maven_java_project/pom.xml'
+            }
+        }
+    }
+}
