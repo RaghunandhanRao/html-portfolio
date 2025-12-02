@@ -1,0 +1,32 @@
+@echo off
+:: === 1. Clone & build ===
+git clone https://github.com/archanareddyse/OLES.git
+cd OLES
+mvn clean package
+if errorlevel 1 (
+  echo Maven build failed. Exiting.
+  exit /b 1
+)
+
+:: === 2. Create Dockerfile ===
+echo FROM tomcat:10.0-jdk17 > Dockerfile
+echo RUN rm -rf /usr/local/tomcat/webapps/ROOT* >> Dockerfile
+echo COPY target/OLES.war /usr/local/tomcat/webapps/ROOT.war >> Dockerfile
+echo EXPOSE 8080 >> Dockerfile
+echo CMD ["catalina.sh","run"] >> Dockerfile
+
+:: === 3. Build Docker image ===
+docker build -t your_dockerhub_username/oles:latest .
+if errorlevel 1 (
+  echo Docker build failed. Exiting.
+  exit /b 1
+)
+
+:: === 4. Run container locally ===
+docker run -d -p 8080:8080 --name oles_local your_dockerhub_username/oles:latest
+
+:: === 5. Push to Docker Hub ===
+docker login
+docker push your_dockerhub_username/oles:latest
+
+echo Done.
